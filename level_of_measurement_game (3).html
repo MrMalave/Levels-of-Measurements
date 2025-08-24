@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Level of Measurement Drag & Drop Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f0f4f8;
+    }
+    h2 {
+      margin-top: 40px;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .box {
+      border: 2px dashed #aaa;
+      padding: 10px;
+      flex: 1;
+      min-height: 200px;
+      background-color: #f9f9f9;
+    }
+    .box h3 {
+      text-align: center;
+    }
+    .item {
+      padding: 5px;
+      margin: 5px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      cursor: grab;
+    }
+    .correct {
+      background-color: #c8f7c5;
+    }
+    .incorrect {
+      background-color: #f7c5c5;
+    }
+    #items {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #score {
+      font-weight: bold;
+      margin-top: 20px;
+    }
+    @media (max-width: 768px) {
+      .box {
+        flex: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Drag & Drop: Level of Measurement Game</h1>
+<p>Drag each situation into the correct category box. Click "Submit" to check your answers.</p>
+
+<div id="items" class="container">
+</div>
+
+<h2>Categories</h2>
+<div class="container">
+  <div class="box" ondrop="drop(event)" ondragover="allowDrop(event)" data-category="Nominal"><h3>Nominal</h3></div>
+  <div class="box" ondrop="drop(event)" ondragover="allowDrop(event)" data-category="Ordinal"><h3>Ordinal</h3></div>
+  <div class="box" ondrop="drop(event)" ondragover="allowDrop(event)" data-category="Interval"><h3>Interval</h3></div>
+  <div class="box" ondrop="drop(event)" ondragover="allowDrop(event)" data-category="Ratio"><h3>Ratio</h3></div>
+</div>
+
+<button onclick="checkAnswers()">Submit</button>
+<div id="score"></div>
+
+<script>
+const situations = [
+  { text: "Eye color", answer: "Nominal" },
+  { text: "Movie ratings (1 to 5 stars)", answer: "Ordinal" },
+  { text: "Temperature in Celsius", answer: "Interval" },
+  { text: "Height in centimeters", answer: "Ratio" },
+  { text: "Types of cuisine", answer: "Nominal" },
+  { text: "Class rankings", answer: "Ordinal" },
+  { text: "Dates on a calendar", answer: "Interval" },
+  { text: "Number of hours studied", answer: "Ratio" },
+  { text: "Zip codes", answer: "Nominal" },
+  { text: "Pain scale (1 to 10)", answer: "Ordinal" },
+  { text: "IQ scores", answer: "Interval" },
+  { text: "Weight of a package", answer: "Ratio" },
+  { text: "Blood type", answer: "Nominal" },
+  { text: "Survey agreement scale", answer: "Ordinal" },
+  { text: "SAT scores", answer: "Interval" },
+  { text: "Age in years", answer: "Ratio" },
+  { text: "Gender", answer: "Nominal" },
+  { text: "Education level (High School, College, etc.)", answer: "Ordinal" },
+  { text: "Time of day", answer: "Interval" },
+  { text: "Income in dollars", answer: "Ratio" },
+  { text: "Marital status", answer: "Nominal" },
+  { text: "Customer satisfaction rating", answer: "Ordinal" },
+  { text: "Temperature in Fahrenheit", answer: "Interval" },
+  { text: "Length of a table", answer: "Ratio" },
+  { text: "Nationality", answer: "Nominal" },
+  { text: "Survey response scale", answer: "Ordinal" },
+  { text: "Calendar years", answer: "Interval" },
+  { text: "Speed of a car", answer: "Ratio" },
+  { text: "Favorite color", answer: "Nominal" },
+  { text: "Rank in a competition", answer: "Ordinal" },
+  { text: "Time on a stopwatch", answer: "Interval" },
+  { text: "Number of siblings", answer: "Ratio" },
+  { text: "Political affiliation", answer: "Nominal" },
+  { text: "Level of agreement", answer: "Ordinal" },
+  { text: "Test scores", answer: "Interval" },
+  { text: "Distance traveled", answer: "Ratio" },
+  { text: "Type of smartphone", answer: "Nominal" },
+  { text: "Class level (Freshman, Sophomore, etc.)", answer: "Ordinal" },
+  { text: "Temperature in Kelvin", answer: "Interval" },
+  { text: "Weight of a person", answer: "Ratio" }
+];
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  const data = ev.dataTransfer.getData("text");
+  const item = document.getElementById(data);
+  ev.target.appendChild(item);
+}
+
+function checkAnswers() {
+  let correct = 0;
+  document.querySelectorAll('.item').forEach(item => {
+    const parent = item.parentElement;
+    const category = parent.getAttribute('data-category');
+    const correctAnswer = item.getAttribute('data-answer');
+    if (category === correctAnswer) {
+      item.classList.add('correct');
+      item.classList.remove('incorrect');
+      correct++;
+    } else {
+      item.classList.add('incorrect');
+      item.classList.remove('correct');
+    }
+  });
+  document.getElementById('score').innerText = `Score: ${correct}/40`;
+}
+
+const itemsContainer = document.getElementById('items');
+situations.forEach((situation, index) => {
+  const div = document.createElement('div');
+  div.className = 'item';
+  div.id = 'item' + index;
+  div.draggable = true;
+  div.ondragstart = drag;
+  div.innerText = situation.text;
+  div.setAttribute('data-answer', situation.answer);
+  itemsContainer.appendChild(div);
+});
+</script>
+
+</body>
+</html>
